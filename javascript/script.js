@@ -35,7 +35,7 @@ document.querySelectorAll(".bi-pencil").forEach(btn => {
             .then(res => {
                 console.log(res);
                 if (res.result){
-                    updateTransaction(res.idT, res.idC, res.name, res.date, res.amount);
+                    updateTransaction(res.idT, res.idC, res.name, res.date, res.amount, res.classC);
                     document.getElementById("msg").innerText = res.msg;
                     setTimeout(() => document.getElementById("msg").innerText = "", 3000);
                 }
@@ -77,14 +77,16 @@ function removeTransaction(tr){
     tr.remove();
 }
 
-function updateTransaction(idT, idC, name, date, amount) {
-    console.log(idT);
+function updateTransaction(idT, idC, name, date, amount, classC) {
+    console.log(idC, classC);
     const tr = document.getElementById(idT);
     console.log(tr.querySelector("[data-cat]"));
     tr.querySelector("[data-cat]").dataset.cat = idC;
     tr.querySelector("[data-name]").dataset.name = name;
     tr.querySelector("[data-name]").innerHTML = `<time datetime='${date}' class='d-block fst-italic fw-light'>`+ new Date(date).toLocaleDateString()+`</time>${name}`;
-    tr.querySelector("span").innerText = parseFloat(amount)+" €";
+    tr.querySelector("span").innerText = parseFloat(amount).toFixed(2);
+    if(idC !== null) tr.querySelector(".ps-3").innerHTML = "<i class='bi bi-"+classC+" fs-3'></i>";
+    else tr.querySelector(".ps-3").innerHTML = "";
 }
 
 function modifyTransaction(idT, idC, name, date, amount) {
@@ -102,12 +104,13 @@ function modifyTransaction(idT, idC, name, date, amount) {
 function createForm(idT, idC, name, date, amount) {
     const form = document.querySelector("#modify-transaction").content.cloneNode(true);
     console.log(idT, idC, name, date, amount);
-    console.log(form.querySelector('[name="category"]').selectedIndex);
+    console.log(form.querySelector('[name="category"] option[value="'+idC+'"]'));
 
     form.querySelector('[name="name"]').value = name;
     form.querySelector('[name="date"]').value = date;
     form.querySelector('[name="amount"]').value = amount;
-    form.querySelector('[name="category"]').selectedIndex = idC;
+    // form.querySelector('[name="category"] option[value="'+idC+'"]') = idC;
+    form.querySelector('[name="category"] option[value="'+idC+'"]').selected = true;
     form.querySelector('tr').dataset.formId = idT;
     return form.querySelector('tr');
 }

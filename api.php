@@ -51,7 +51,7 @@ if ($data['action'] === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($data['action'] === 'modify' && $_SERVER['REQUEST_METHOD'] === 'PUT') {
     $idT = intval(strip_tags($data['idT']));
-    $idC = intval(strip_tags($data['idC']));
+    $idC = $data["idC"] === "" ? NULL : intval(strip_tags($data['idC']));
     $name = trim(strip_tags($data['name']));
     $amount = floatval(strip_tags($data['amount']));
     $date = strip_tags($data['date']);
@@ -68,6 +68,11 @@ if ($data['action'] === 'modify' && $_SERVER['REQUEST_METHOD'] === 'PUT') {
         'idTrans' => $idT
     ]);
 
+    $query = $dbCo->prepare("SELECT icon_class  FROM transaction LEFT JOIN
+    category USING (id_category) WHERE id_transaction = :idTrans;");
+    $query->execute(['idTrans' => $idT]);
+    $classC = $query->fetchColumn();
+
     $msg = "Opération modifiée correctement";
 
     $dataR = [
@@ -77,7 +82,8 @@ if ($data['action'] === 'modify' && $_SERVER['REQUEST_METHOD'] === 'PUT') {
         'date' => $date,
         'idC' => $idC,
         'idT' => $idT,
-        'msg' => $msg
+        'msg' => $msg,
+        'classC' => $classC
     ];
 
     echo json_encode($dataR);

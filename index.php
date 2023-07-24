@@ -11,9 +11,15 @@
     $query->execute(["date" => date("Y-m")."%"]);
     $res = $query->fetchAll();
 
-    $query = $dbCo->prepare("SELECT SUM(amount) AS total FROM transaction WHERE date_transaction LIKE :date ;");
-    $query->execute(["date" => date("Y-m")."%"]);
+    // $query = $dbCo->prepare("SELECT SUM(amount) AS total FROM transaction WHERE date_transaction LIKE :date ;");
+    // $query->execute(["date" => date("Y-m")."%"]);
+    $query = $dbCo->prepare("SELECT SUM(amount) AS total FROM transaction;");
+    $query->execute();
     $restAmount = $query->fetchColumn();
+
+    $query = $dbCo->prepare("SELECT id_category AS idC, category_name AS nameC FROM category;");
+    $query->execute();
+    $cat = $query->fetchAll();
 
     include_once ("includes/_header.php");
 ?>
@@ -33,7 +39,7 @@
                 <h1 class="my-0 fw-normal fs-4">Opérations de Juillet 2023</h1>
             </div>
             <div class="card-body">
-                <div id="msg" class="text-center"></div>
+                <div id="msg" class="text-center bg-success text-white"></div>
                 <table class="table table-striped table-hover align-middle">
                     <thead>
                         <tr>
@@ -116,20 +122,18 @@
     <template id="modify-transaction">
         <tr data-form-id="">
             <td colspan="4">
-                <form action="" method="post" >
-                    <input type="text" name="name" value="">
-                    <input type="date" name="date" value="">
-                    <input type="number" name="amount" value="">
+                <form action="" method="post">
                     <select class="form-select" name="category" id="category">
                         <option value="">Aucune catégorie</option>
-                        <option value="1">Nourriture</option>
-                        <option value="2">Loisir</option>
-                        <option value="3">Travail</option>
-                        <option value="4">Voyage</option>
-                        <option value="5">Sport</option>
-                        <option value="6">Habitat</option>
-                        <option value="7">Cadeaux</option>
+                        <?php
+                            for($i=0; $i<count($cat); $i++){
+                                echo "<option value='".$cat[$i]["idC"]."'>".$cat[$i]["nameC"]."</option>";
+                            }
+                        ?>
                     </select>
+                    <input type="date" name="date" value="">
+                    <input type="text" name="name" value="">
+                    <input type="number" name="amount" value="">
                     <input type="hidden" name="idTransaction" value="">
                     <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
                     <input type="submit" value="valider">

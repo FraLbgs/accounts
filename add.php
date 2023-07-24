@@ -3,6 +3,11 @@
 
     include_once ("includes/_database.php");
 
+    
+    $query = $dbCo->prepare("SELECT id_category AS idC, category_name AS nameC FROM category;");
+    $query->execute();
+    $cat = $query->fetchAll();
+
     include_once ("includes/_header.php");
 ?>
 
@@ -16,7 +21,7 @@
                 <?php
                     $_SESSION["token"] = md5(uniqid(mt_rand(), true));
                 ?>
-                    <div id="msg-confirm" class="text-center"></div>
+                    <div id="msg-confirm" class="text-center bg-success text-white"></div>
                     <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nom de l'opération *</label>
@@ -39,13 +44,21 @@
                         <label for="category" class="form-label">Catégorie</label>
                         <select class="form-select" name="category" id="category">
                             <option value="" selected>Aucune catégorie</option>
-                            <option value="1">Nourriture</option>
+                            <?php
+                                for($i=0; $i<count($cat); $i++){
+                                    echo "<option value='".$cat[$i]["idC"]."'>".$cat[$i]["nameC"]."</option>";
+                                }
+                            ?>
+
+
+
+                            <!-- <option value="1">Nourriture</option>
                             <option value="2">Loisir</option>
                             <option value="3">Travail</option>
                             <option value="4">Voyage</option>
                             <option value="5">Sport</option>
                             <option value="6">Habitat</option>
-                            <option value="7">Cadeaux</option>
+                            <option value="7">Cadeaux</option> -->
                         </select>
                     </div>
                     <div class="text-center">

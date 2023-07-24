@@ -1,4 +1,16 @@
 <?php
+    session_start();
+
+    include_once ("includes/_database.php");
+
+
+    $query = $dbCo->prepare("SELECT icon_class, category_name, COUNT(id_category) AS totalOpe FROM transaction 
+                        LEFT JOIN category USING (id_category) 
+                        WHERE icon_class IS NOT NULL GROUP BY id_category ORDER BY totalOpe DESC;");
+    $query->execute();
+    $cats = $query->fetchAll();
+
+
     include_once ("includes/_header.php");
 ?>
 
@@ -9,9 +21,38 @@
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?php
+                        for($i=0; $i<count($cats); $i++){
+                            ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
-                            <i class="bi bi-house-door fs-3""></i>
+                            <i class="bi bi-<?= $cats[$i]["icon_class"] ?> fs-3"></i>
+                            &nbsp;
+                            <?= $cats[$i]["category_name"] ?>
+                            &nbsp;
+                            <span class=" badge bg-secondary"><?= $cats[$i]["totalOpe"] ?> opérations</span>
+                        </div>
+                        <div>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-danger btn-sm rounded-circle">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <?php
+                        }
+                    ?>
+
+
+
+
+
+
+                    <!-- <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-house-door fs-3"></i>
                             &nbsp;
                             Habitation
                             &nbsp;
@@ -76,7 +117,7 @@
                                 <i class="bi bi-trash"></i>
                             </a>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </section>
