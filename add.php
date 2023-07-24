@@ -19,7 +19,7 @@
             <div class="card-body">
                 <form action="#" method="post">
                 <?php
-                    $_SESSION["token"] = md5(uniqid(mt_rand(), true));
+                    // $_SESSION["token"] = md5(uniqid(mt_rand(), true));
                 ?>
                     <div id="msg-confirm" class="text-center bg-success text-white"></div>
                     <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
@@ -49,16 +49,6 @@
                                     echo "<option value='".$cat[$i]["idC"]."'>".$cat[$i]["nameC"]."</option>";
                                 }
                             ?>
-
-
-
-                            <!-- <option value="1">Nourriture</option>
-                            <option value="2">Loisir</option>
-                            <option value="3">Travail</option>
-                            <option value="4">Voyage</option>
-                            <option value="5">Sport</option>
-                            <option value="6">Habitat</option>
-                            <option value="7">Cadeaux</option> -->
                         </select>
                     </div>
                     <div class="text-center">

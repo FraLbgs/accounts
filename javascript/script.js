@@ -23,7 +23,6 @@ document.querySelectorAll(".bi-pencil").forEach(btn => {
         const amount = parseInt(tr.querySelector("span").innerText);
         const form = createForm(idT, idC, name, date, amount);
         document.querySelector("tbody").insertBefore(form,tr);
-
         form.addEventListener('submit', e => {
             e.preventDefault();
             modifyTransaction(e.target.closest("tr").dataset.formId,
@@ -33,7 +32,7 @@ document.querySelectorAll(".bi-pencil").forEach(btn => {
                 form.querySelector('input[name="amount"]').value
                 )
             .then(res => {
-                console.log(res);
+                // console.log(res);
                 if (res.result){
                     updateTransaction(res.idT, res.idC, res.name, res.date, res.amount, res.classC);
                     document.getElementById("msg").innerText = res.msg;
@@ -121,7 +120,7 @@ function getCsrfToken() {
 
 function putOperation(name, date, amount, category) {
     return callAPI('POST', {
-        action: 'add',
+        action: 'addOpe',
         name: name,
         date: date,
         amount: amount,
@@ -144,4 +143,53 @@ async function callAPI(method, data) {
     catch (error) {
         console.error("Unable to load datas from the server : " + error);
     }
+}
+
+/* Onglet Catégories */
+
+if(document.getElementById("add-category") !== null){
+    document.getElementById("add-category").addEventListener("click", function(e){
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const icon = document.getElementById("icon").value;
+        addCategory(name, icon).then(res => {
+            // console.log(res);
+            if (res.result){
+                updateCategoies(name, icon);
+                document.getElementById("msg").innerText = res.msg;
+                setTimeout(() => document.getElementById("msg").innerText = "", 3000);
+            }
+            else console.error('Erreur lors de lajout.');
+        });
+    });
+}
+
+function addCategory(name, icon){
+    return callAPI('POST', {
+        action: 'addCat',
+        name: name,
+        icon: icon,
+        token: getCsrfToken()
+    });
+}
+
+function updateCategoies(name, icon){
+    const li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center"
+    li.innerHTML = `<div>
+        <i class='bi bi-${icon} fs-3'></i>
+        &nbsp;
+        ${name}
+        &nbsp;
+        <span class=' badge bg-secondary'>0 opérations</span>
+    </div>
+    <div>
+        <a href='#' class='btn btn-outline-primary btn-sm rounded-circle'>
+            <i class='bi bi-pencil'></i>
+        </a>
+        <a href='#' class='btn btn-outline-danger btn-sm rounded-circle'>
+            <i class='bi bi-trash'></i>
+        </a>
+    </div>`;
+    document.querySelector(".list-group-flush").appendChild(li);
 }

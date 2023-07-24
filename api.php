@@ -31,7 +31,7 @@ if (!array_key_exists('token', $_SESSION) || !array_key_exists('token', $data)
     exit;
 }
 
-if ($data['action'] === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($data['action'] === 'addOpe' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $query = $dbCo->prepare("INSERT INTO transaction (name, amount, date_transaction, id_category) VALUES
                                 (:name, :amount, :date_transaction, :id_category);");
     $isOk = $query->execute([
@@ -90,3 +90,18 @@ if ($data['action'] === 'modify' && $_SERVER['REQUEST_METHOD'] === 'PUT') {
     exit;
 }
 
+if ($data['action'] === 'addCat' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $query = $dbCo->prepare("INSERT INTO category (category_name, icon_class) VALUES
+                                (:name, :icon);");
+    $isOk = $query->execute([
+        "name" => trim(strip_tags($data["name"])),
+        "icon" => trim(strip_tags($data["icon"]))
+    ]);
+    $msg = "Catégorie bien ajoutée";
+
+    echo json_encode([
+        'result' => $isOk,
+        'msg' => $msg
+    ]);
+    exit;
+}
