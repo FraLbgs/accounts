@@ -4,7 +4,7 @@
     include_once ("includes/_database.php");
 
 
-    $query = $dbCo->prepare("SELECT icon_class, category_name, COUNT(id_category) AS totalOpe FROM transaction 
+    $query = $dbCo->prepare("SELECT id_category AS idC, icon_class, category_name, COUNT(id_category) AS totalOpe FROM transaction 
                         LEFT JOIN category USING (id_category) 
                         WHERE icon_class IS NOT NULL GROUP BY id_category ORDER BY totalOpe DESC;");
     $query->execute();
@@ -22,29 +22,25 @@
             <div class="card-body">
                 <div id="msg" class="text-center bg-success text-white"></div>
                 <ul class="list-group list-group-flush">
-                    <?php
-                        for($i=0; $i<count($cats); $i++){
-                            ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="bi bi-<?= $cats[$i]["icon_class"] ?> fs-3"></i>
-                            &nbsp;
-                            <?= $cats[$i]["category_name"] ?>
-                            &nbsp;
-                            <span class=" badge bg-secondary"><?= $cats[$i]["totalOpe"] ?> opérations</span>
-                        </div>
-                        <div>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-danger btn-sm rounded-circle">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </div>
-                    </li>
-                    <?php
-                        }
-                    ?>
+                    <?php for($i=0; $i<count($cats); $i++){ ?>
+                        <li id="<?= $cats[$i]["idC"] ?>" class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-<?= $cats[$i]["icon_class"] ?> fs-3"></i>
+                                &nbsp;
+                                <?= $cats[$i]["category_name"] ?>
+                                &nbsp;
+                                <span class=" badge bg-secondary"><?= $cats[$i]["totalOpe"] ?> opérations</span>
+                            </div>
+                            <div>
+                                <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
+                                    <i class="bi bi-pencil" data-cat-id="<?= $cats[$i]["idC"] ?>" data-name="<?= $cats[$i]["category_name"] ?>" data-icon="<?= $cats[$i]["icon_class"] ?>" ></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-danger btn-sm rounded-circle">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </li>
+                    <?php } ?>
                 </ul>
             </div>
         </section>
@@ -77,6 +73,17 @@
             <i class="bi bi-plus fs-1"></i>
         </a>
     </div>
+
+    <template id="modify-category">
+        <li class="list-group-item d-flex justify-content-between align-items-center" data-form-id="">
+                <form action="" method="post">
+                    <input type="text" name="icon" value="">
+                    <input type="text" name="name" value="">
+                    <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
+                    <input type="submit" value="valider">
+                </form>
+        </li>
+    </template>
 
 <?php
     include_once ("includes/_footer.php");

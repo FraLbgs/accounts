@@ -1,3 +1,5 @@
+/* Page add.php */
+
 if(document.getElementById("submit") !== null){
     document.getElementById("submit").addEventListener("click", function(e){
         putOperation(document.getElementById("name").value, 
@@ -13,56 +15,61 @@ if(document.getElementById("submit") !== null){
     });
 }
 
-document.querySelectorAll(".bi-pencil").forEach(btn => {
-    btn.addEventListener('click', e => {
-        const idT = e.target.dataset.transaction;
-        const idC = e.target.dataset.cat;
-        const tr = e.target.closest("tr");
-        const name = tr.querySelector("[data-name]").dataset.name;
-        const date = tr.querySelector("time").getAttribute("datetime");
-        const amount = parseInt(tr.querySelector("span").innerText);
-        const form = createForm(idT, idC, name, date, amount);
-        document.querySelector("tbody").insertBefore(form,tr);
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            modifyTransaction(e.target.closest("tr").dataset.formId,
-                form.querySelector('select[name="category"]').value,
-                form.querySelector('input[name="name"]').value,
-                form.querySelector('input[name="date"]').value,
-                form.querySelector('input[name="amount"]').value
-                )
-            .then(res => {
-                // console.log(res);
-                if (res.result){
-                    updateTransaction(res.idT, res.idC, res.name, res.date, res.amount, res.classC);
-                    document.getElementById("msg").innerText = res.msg;
-                    setTimeout(() => document.getElementById("msg").innerText = "", 3000);
-                }
-                else console.error('Erreur lors de la modification.');
-                
-                form.remove();
+
+/* Page index.php */
+
+if(document.getElementById("modify-transaction") !== null){
+    document.querySelectorAll(".bi-pencil").forEach(btn => {
+        btn.addEventListener('click', e => {
+            const idT = e.target.dataset.transaction;
+            const idC = e.target.dataset.cat;
+            const tr = e.target.closest("tr");
+            const name = tr.querySelector("[data-name]").dataset.name;
+            const date = tr.querySelector("time").getAttribute("datetime");
+            const amount = parseInt(tr.querySelector("span").innerText);
+            const form = createForm(idT, idC, name, date, amount);
+            document.querySelector("tbody").insertBefore(form,tr);
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                modifyTransaction(e.target.closest("tr").dataset.formId,
+                    form.querySelector('select[name="category"]').value,
+                    form.querySelector('input[name="name"]').value,
+                    form.querySelector('input[name="date"]').value,
+                    form.querySelector('input[name="amount"]').value
+                    )
+                .then(res => {
+                    // console.log(res);
+                    if (res.result){
+                        updateTransaction(res.idT, res.idC, res.name, res.date, res.amount, res.classC);
+                        document.getElementById("msg").innerText = res.msg;
+                        setTimeout(() => document.getElementById("msg").innerText = "", 3000);
+                    }
+                    else console.error('Erreur lors de la modification.');
+                    
+                    form.remove();
+                });
             });
         });
     });
-});
-
-document.querySelectorAll(".bi-trash").forEach(btn => {
-    btn.addEventListener('click', e => {
-        const idT = e.target.dataset.delete;
-        console.log("idT",idT);
-        const tr = e.target.closest("tr");
-
-        deleteTransaction(idT).then(res => {
-                console.log(res);
-                if (res.result){
-                    removeTransaction(tr);
-                    document.getElementById("msg").innerText = res.msg;
-                    setTimeout(() => document.getElementById("msg").innerText = "", 3000);
-                }
-                else console.error('Erreur lors de la modification.');
+    
+    document.querySelectorAll(".bi-trash").forEach(btn => {
+        btn.addEventListener('click', e => {
+            const idT = e.target.dataset.delete;
+            console.log("idT",idT);
+            const tr = e.target.closest("tr");
+    
+            deleteTransaction(idT).then(res => {
+                    console.log(res);
+                    if (res.result){
+                        removeTransaction(tr);
+                        document.getElementById("msg").innerText = res.msg;
+                        setTimeout(() => document.getElementById("msg").innerText = "", 3000);
+                    }
+                    else console.error('Erreur lors de la modification.');
+            });
         });
     });
-});
+}
 
 function deleteTransaction(idT){
 
@@ -77,7 +84,6 @@ function removeTransaction(tr){
 }
 
 function updateTransaction(idT, idC, name, date, amount, classC) {
-    console.log(idC, classC);
     const tr = document.getElementById(idT);
     console.log(tr.querySelector("[data-cat]"));
     tr.querySelector("[data-cat]").dataset.cat = idC;
@@ -145,7 +151,8 @@ async function callAPI(method, data) {
     }
 }
 
-/* Onglet Catégories */
+
+/* Page categories.php */
 
 if(document.getElementById("add-category") !== null){
     document.getElementById("add-category").addEventListener("click", function(e){
@@ -155,7 +162,7 @@ if(document.getElementById("add-category") !== null){
         addCategory(name, icon).then(res => {
             // console.log(res);
             if (res.result){
-                updateCategoies(name, icon);
+                updateCategories(res.idC, name, icon);
                 document.getElementById("msg").innerText = res.msg;
                 setTimeout(() => document.getElementById("msg").innerText = "", 3000);
             }
@@ -173,23 +180,83 @@ function addCategory(name, icon){
     });
 }
 
-function updateCategoies(name, icon){
+function updateCategories(idC, name, icon){
     const li = document.createElement("li");
-    li.className = "list-group-item d-flex justify-content-between align-items-center"
-    li.innerHTML = `<div>
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.id = idC;
+    li.innerHTML = displayCategory(idC, name, icon);
+    document.querySelector(".list-group-flush").appendChild(li);
+}
+
+function displayCategory(idC, name, icon, totalOpe = 0){
+    return `<div>
         <i class='bi bi-${icon} fs-3'></i>
         &nbsp;
         ${name}
         &nbsp;
-        <span class=' badge bg-secondary'>0 opérations</span>
+        <span class=' badge bg-secondary'>${totalOpe} opérations</span>
     </div>
     <div>
         <a href='#' class='btn btn-outline-primary btn-sm rounded-circle'>
-            <i class='bi bi-pencil'></i>
+            <i class='bi bi-pencil' data-cat-id='${idC}' data-name='${name}' data-icon='${icon}'></i>
         </a>
         <a href='#' class='btn btn-outline-danger btn-sm rounded-circle'>
-            <i class='bi bi-trash'></i>
+            <i class='bi bi-trash' data-cat-id='${idC}'></i>
         </a>
     </div>`;
-    document.querySelector(".list-group-flush").appendChild(li);
+}
+
+if(document.getElementById("modify-category") !== null){
+    document.querySelectorAll(".bi-pencil").forEach(btn => {
+        btn.addEventListener('click', e => {
+            const li = e.target.closest("li");
+            const idC = e.target.dataset.catId;
+            const name = e.target.dataset.name;
+            const icon = e.target.dataset.icon;
+            const form = createFormCat(idC, name, icon);
+            document.querySelector(".list-group-flush").insertBefore(form,li);
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                modifyCategory(e.target.closest("li").dataset.formId,
+                    form.querySelector('input[name="name"]').value,
+                    form.querySelector('input[name="icon"]').value
+                    )
+                .then(res => {
+                    // console.log(res);
+                    if (res.result){
+                        updateCategory(res.idC, res.name, res.icon, res.totalOpe);
+                        document.getElementById("msg").innerText = res.msg;
+                        setTimeout(() => document.getElementById("msg").innerText = "", 3000);
+                    }
+                    else console.error('Erreur lors de la modification.');
+                    
+                    form.remove();
+                });
+            });
+        });
+    });
+}
+
+function createFormCat(idC, name, icon) {
+    const form = document.querySelector("#modify-category").content.cloneNode(true);
+    console.log(name, icon);
+    form.querySelector('[name="name"]').value = name;
+    form.querySelector('[name="icon"]').value = icon;
+    form.querySelector('li').dataset.formId = idC;
+    return form.querySelector('li');
+}
+
+function modifyCategory(idC, name, icon){
+    return callAPI('PUT', {
+        action: 'modifyCat',
+        idC: idC,
+        name: name,
+        icon: icon,
+        token: getCsrfToken()
+    });
+}
+
+function updateCategory(idC, name, icon, totalOpe){
+    const li = document.getElementById(idC);
+    li.innerHTML = displayCategory(idC, name, icon, totalOpe);
 }

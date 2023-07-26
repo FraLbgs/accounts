@@ -97,11 +97,51 @@ if ($data['action'] === 'addCat' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         "name" => trim(strip_tags($data["name"])),
         "icon" => trim(strip_tags($data["icon"]))
     ]);
+
+    $query2 = $dbCo->prepare("SELECT id_category  FROM category ORDER BY id_category DESC;");
+    $query2->execute();
+    $idC = $query2->fetchColumn();
+
     $msg = "Catégorie bien ajoutée";
 
     echo json_encode([
         'result' => $isOk,
+        'idC' => $idC,
         'msg' => $msg
     ]);
+    exit;
+}
+
+if ($data['action'] === 'modifyCat' && $_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $idC = intval(strip_tags($data['idC']));
+    $name = trim(strip_tags($data['name']));
+    $icon = trim(strip_tags($data['icon']));
+    $query = $dbCo->prepare("UPDATE category SET category_name = :name,
+                                                    icon_class = :icon
+                             WHERE id_category = :idC;");
+    $isOk = $query->execute([
+        'name' => $name,
+        'icon' => $icon,
+        'idC' => $idC
+    ]);
+
+    $query2 = $dbCo->prepare("SELECT COUNT(id_category) AS totalOpe FROM transaction 
+                        LEFT JOIN category USING (id_category) 
+                        WHERE id_category = :idC;");
+    $query2->execute(['idC' => $idC]);
+    $totalOpe = $query2->fetchColumn();
+
+    $msg = "Catégorie modifiée correctement";
+
+    $dataR = [
+        'result' => $isOk && $query->rowCount() > 0,
+        'name' => $name,
+        'idC' => $idC,
+        'icon' => $icon,
+        'totalOpe' => $totalOpe,
+        'msg' => $msg
+    ];
+
+    echo json_encode($dataR);
     exit;
 }
