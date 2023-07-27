@@ -36,7 +36,7 @@
                                     <i class="bi bi-pencil" data-cat-id="<?= $cats[$i]["idC"] ?>" data-name="<?= $cats[$i]["category_name"] ?>" data-icon="<?= $cats[$i]["icon_class"] ?>" ></i>
                                 </a>
                                 <a href="#" class="btn btn-outline-danger btn-sm rounded-circle">
-                                    <i class="bi bi-trash"></i>
+                                    <i class="bi bi-trash" data-cat-id="<?= $cats[$i]["idC"] ?>"></i>
                                 </a>
                             </div>
                         </li>

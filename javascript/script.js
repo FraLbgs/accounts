@@ -21,12 +21,15 @@ if(document.getElementById("submit") !== null){
 if(document.getElementById("modify-transaction") !== null){
     document.querySelectorAll(".bi-pencil").forEach(btn => {
         btn.addEventListener('click', e => {
+            console.log(e.target.parentElement);
+            e.stopPropagation();
+            e.preventDefault();
             const idT = e.target.dataset.transaction;
             const idC = e.target.dataset.cat;
             const tr = e.target.closest("tr");
             const name = tr.querySelector("[data-name]").dataset.name;
             const date = tr.querySelector("time").getAttribute("datetime");
-            const amount = parseInt(tr.querySelector("span").innerText);
+            const amount = parseFloat(tr.querySelector("span").innerText);
             const form = createForm(idT, idC, name, date, amount);
             document.querySelector("tbody").insertBefore(form,tr);
             form.addEventListener('submit', e => {
@@ -54,25 +57,24 @@ if(document.getElementById("modify-transaction") !== null){
     
     document.querySelectorAll(".bi-trash").forEach(btn => {
         btn.addEventListener('click', e => {
+            const res = confirm("Etes-vous sûr de vouloir supprimer cette opération ?");
+            if(!res) return;
             const idT = e.target.dataset.delete;
-            console.log("idT",idT);
             const tr = e.target.closest("tr");
     
             deleteTransaction(idT).then(res => {
-                    console.log(res);
                     if (res.result){
                         removeTransaction(tr);
                         document.getElementById("msg").innerText = res.msg;
                         setTimeout(() => document.getElementById("msg").innerText = "", 3000);
                     }
-                    else console.error('Erreur lors de la modification.');
+                    else console.error('Erreur lors de la supression.');
             });
         });
     });
 }
 
 function deleteTransaction(idT){
-
     return callAPI('DELETE', {
         action: 'delete',
         idT: idT
@@ -85,11 +87,12 @@ function removeTransaction(tr){
 
 function updateTransaction(idT, idC, name, date, amount, classC) {
     const tr = document.getElementById(idT);
-    console.log(tr.querySelector("[data-cat]"));
     tr.querySelector("[data-cat]").dataset.cat = idC;
     tr.querySelector("[data-name]").dataset.name = name;
     tr.querySelector("[data-name]").innerHTML = `<time datetime='${date}' class='d-block fst-italic fw-light'>`+ new Date(date).toLocaleDateString()+`</time>${name}`;
     tr.querySelector("span").innerText = parseFloat(amount).toFixed(2);
+    const value = (parseFloat(amount) > 0 ? "success" : "warning" )
+    tr.querySelector("span").className = "rounded-pill text-nowrap bg-"+value+"-subtle px-2";
     if(idC !== null) tr.querySelector(".ps-3").innerHTML = "<i class='bi bi-"+classC+" fs-3'></i>";
     else tr.querySelector(".ps-3").innerHTML = "";
 }
@@ -114,7 +117,6 @@ function createForm(idT, idC, name, date, amount) {
     form.querySelector('[name="name"]').value = name;
     form.querySelector('[name="date"]').value = date;
     form.querySelector('[name="amount"]').value = amount;
-    // form.querySelector('[name="category"] option[value="'+idC+'"]') = idC;
     form.querySelector('[name="category"] option[value="'+idC+'"]').selected = true;
     form.querySelector('tr').dataset.formId = idT;
     return form.querySelector('tr');
@@ -167,6 +169,24 @@ if(document.getElementById("add-category") !== null){
                 setTimeout(() => document.getElementById("msg").innerText = "", 3000);
             }
             else console.error('Erreur lors de lajout.');
+        });
+    });
+
+    document.querySelectorAll(".bi-trash").forEach(btn => {
+        btn.addEventListener('click', e => {
+            const res = confirm("Etes-vous sûr de vouloir supprimer cette catégorie ?");
+            if(!res) return;
+            const idC = e.target.dataset.catId;
+            const li = e.target.closest("li");
+    
+            deleteCategory(idC).then(res => {
+                    if (res.result){
+                        removeCategory(li);
+                        document.getElementById("msg").innerText = res.msg;
+                        setTimeout(() => document.getElementById("msg").innerText = "", 3000);
+                    }
+                    else console.error('Erreur lors de la suppression.');
+            });
         });
     });
 }
@@ -259,4 +279,17 @@ function modifyCategory(idC, name, icon){
 function updateCategory(idC, name, icon, totalOpe){
     const li = document.getElementById(idC);
     li.innerHTML = displayCategory(idC, name, icon, totalOpe);
+}
+
+function deleteCategory(idC){
+    console.log(idC);
+    return callAPI('DELETE', {
+        action: 'deleteCat',
+        idC: idC,
+        token: getCsrfToken()
+    });
+}
+
+function removeCategory(li){
+    li.remove();
 }

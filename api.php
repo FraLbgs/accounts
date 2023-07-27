@@ -145,3 +145,20 @@ if ($data['action'] === 'modifyCat' && $_SERVER['REQUEST_METHOD'] === 'PUT') {
     echo json_encode($dataR);
     exit;
 }
+
+if ($data['action'] === 'deleteCat' && $_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $query = $dbCo->prepare("DELETE FROM category WHERE id_category = :idC;");
+    $isOk = $query->execute(["idC" => intval(strip_tags($data['idC']))]);
+
+    $query2 = $dbCo->prepare("UPDATE transaction SET id_category = NULL
+                             WHERE id_category = :idC;");
+    $isOk2 = $query2->execute(['idC' => intval(strip_tags($data['idC']))]);
+
+    $msg = "Catégorie supprimée correctement";
+
+    echo json_encode([
+        'result' => $isOk && $isOk2 && $query2->rowCount() > 0,
+        'msg' => $msg
+    ]);
+    exit;
+}

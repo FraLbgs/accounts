@@ -133,7 +133,7 @@
                     </select>
                     <input type="date" name="date" value="">
                     <input type="text" name="name" value="">
-                    <input type="number" name="amount" value="">
+                    <input type="text" name="amount" value="">
                     <input type="hidden" name="idTransaction" value="">
                     <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
                     <input type="submit" value="valider">
