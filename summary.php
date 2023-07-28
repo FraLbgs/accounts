@@ -1,4 +1,23 @@
 <?php
+    include_once ("includes/_database.php");
+
+    $query = $dbCo->prepare("SELECT SUM(amount) AS balance, 
+                            (SELECT SUM(amount) FROM transaction WHERE amount > 0 AND date_transaction LIKE :date) AS recette, 
+                            (SELECT SUM(amount) FROM transaction WHERE amount < 0 AND date_transaction LIKE :date) AS depense 
+                            FROM transaction WHERE date_transaction LIKE :date;");
+    $query->execute(["date" => date("Y-m")."%"]);
+    $res = $query->fetch();
+
+    $query2 = $dbCo->prepare("SELECT icon_class, category_name, SUM(amount) AS depense,
+    SUM(amount)/(SELECT SUM(amount) FROM transaction WHERE date_transaction LIKE :date AND amount < 0 AND id_category IS NOT NULL)*100 AS pourcentage
+    FROM transaction JOIN category USING (id_category) WHERE date_transaction LIKE :date AND amount < 0 GROUP BY id_category;");
+    $query2->execute(["date" => date("Y-m")."%"]);
+    $percent = $query2->fetchAll();
+
+    $query3 = $dbCo->prepare("SELECT COUNT(amount) AS no_cat FROM transaction WHERE date_transaction LIKE :date AND amount < 0 AND id_category IS NULL;");
+    $query3->execute(["date" => date("Y-m")."%"]);
+    $noCat = $query3->fetchColumn();
+
     include_once ("includes/_header.php");
 ?>
 
@@ -11,19 +30,19 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-around align-items-center">
                         <span class="rounded-pill text-nowrap bg-warning-subtle fs-2 px-2">
-                            - 399,94 €
+                            <?= $res["balance"] ?> €
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <h3 class="fs-4">Recettes</h3>
                         <span class="rounded-pill text-nowrap bg-success-subtle fs-4 px-2">
-                            + 600,26 €
+                            + <?= $res["recette"] ?> €
                         </span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <h3 class="fs-4">Dépenses</h3>
                         <span class="rounded-pill text-nowrap bg-warning-subtle fs-4 px-2">
-                            - 1 000,20 €
+                            - <?= -$res["depense"] ?> €
                         </span>
                     </li>
                 </ul>
@@ -36,7 +55,7 @@
             </div>
             <div class="card-body">
                 <div class="alert alert-warning" role="alert">
-                    Attention, 5 dépenses n'ont pas été catégoriées pour le mois de juillet 2017.
+                    Attention, <?= $noCat ?> dépenses n'ont pas été catégorisées pour ce mois.
                 </div>
                 <table class="table table-striped table-hover align-middle">
                     <thead>
@@ -47,54 +66,24 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php for($i=0; $i<count($percent); $i++){ ?>
                         <tr>
                             <td class="ps-3">
-                                <i class="bi bi-house-door fs-3"></i>
+                                <i class="bi bi-<?= $percent[$i]["icon_class"] ?> fs-3"></i>
                             </td>
                             <td>
-                                Habitation
+                            <?= $percent[$i]["category_name"] ?>
                             </td>
                             <td class="text-end">
                                 <span class="rounded-pill text-nowrap bg-warning-subtle px-2">
-                                    - 604,00 €
+                                    - <?= -$percent[$i]["depense"] ?> €
                                 </span>
                             </td>
                             <td class="text-end text-nowrap">
-                                69,88 %
+                            <?= round($percent[$i]["pourcentage"], 2) ?> %
                             </td>
                         </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="bi bi-emoji-smile fs-3"></i>
-                            </td>
-                            <td>
-                                Loisir
-                            </td>
-                            <td class="text-end">
-                                <span class="rounded-pill text-nowrap bg-warning-subtle px-2">
-                                    - 198,34 €
-                                </span>
-                            </td>
-                            <td class="text-end text-nowrap">
-                                22,95 %
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="bi bi-train-front fs-3"></i>
-                            </td>
-                            <td>
-                                Voyage
-                            </td>
-                            <td class="text-end">
-                                <span class="rounded-pill text-nowrap bg-warning-subtle px-2">
-                                    - 62,00 €
-                                </span>
-                            </td>
-                            <td class="text-end text-nowrap">
-                                7,17 %
-                            </td>
-                        </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>

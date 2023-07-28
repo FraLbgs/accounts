@@ -67,8 +67,8 @@
                                 </td>
                                 <td class="text-end">
                                     <span class="rounded-pill text-nowrap bg-<?php echo $res[$i]["amount"] > 0 ? "success" : "warning"  ?>-subtle px-2">
-                                        <?= $res[$i]["amount"] ?>
-                                    </span> €
+                                        <?= $res[$i]["amount"] ?> €
+                                    </span>
                                 </td>
                                 <td class="text-end text-nowrap">
                                     <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
