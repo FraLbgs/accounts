@@ -1,58 +1,57 @@
-name,amount,date_transaction
 Bar,-21,2022-02-05
-Loyer de février 2022,"-432,2",2022-02-05
+Loyer de février 2022,"-432.2",2022-02-05
 RDV médecin,-25,2022-02-07
 Facture électricité,-62,2022-02-08
-Facture eau,"-152,3",2022-02-08
-Essence voiture,"-58,1",2022-02-14
-Course Biocoop,"-35,4",2022-02-16
-Abonnement Sosh mobile,"-12,9",2022-02-16
-Salle de sport,"-69,9",2022-02-20
-Bar,"-32,1",2022-02-21
+Facture eau,"-152.3",2022-02-08
+Essence voiture,"-58.1",2022-02-14
+Course Biocoop,"-35.4",2022-02-16
+Abonnement Sosh mobile,"-12.9",2022-02-16
+Salle de sport,"-69.9",2022-02-20
+Bar,"-32.1",2022-02-21
 Reboursement sécurité sociale,20,2022-02-25
-Course Carrefour,"-60,4",2022-03-02
-Virement salaire mars 2022,"1326,5",2022-03-02
-Essence voiture,"-59,7",2022-03-03
-Loyer de mars 2022,"-438,3",2022-03-07
+Course Carrefour,"-60.4",2022-03-02
+Virement salaire mars 2022,"1326.5",2022-03-02
+Essence voiture,"-59.7",2022-03-03
+Loyer de mars 2022,"-438.3",2022-03-07
 Bar,-41,2022-03-09
-RDV ophtalmo,"-35,3",2022-03-10
+RDV ophtalmo,"-35.3",2022-03-10
 Facture électricité,-62,2022-03-10
-Course Carrefour ,"-40,21",2022-03-16
-Abonnement Sosh mobile,"-12,9",2022-03-18
-Essence voiture,"-61,3",2022-03-20
-Bar,"-20,4",2022-03-25
-Reboursement sécurité sociale,"28,24",2022-03-28
-Course Biocoop,"-25,3",2022-03-30
-Virement salaire avril 2022,"1326,5",2022-04-01
-Essence voiture,"-62,9",2022-04-06
+Course Carrefour ,"-40.21",2022-03-16
+Abonnement Sosh mobile,"-12.9",2022-03-18
+Essence voiture,"-61.3",2022-03-20
+Bar,"-20.4",2022-03-25
+Reboursement sécurité sociale,"28.24",2022-03-28
+Course Biocoop,"-25.3",2022-03-30
+Virement salaire avril 2022,"1326.5",2022-04-01
+Essence voiture,"-62.9",2022-04-06
 Billets de train Paris,-72,2022-04-07
-Loyer de avril 2022,"-432,2",2022-04-07
-RDV dentiste,"-60,7",2022-04-10
-Bar,"-30,4",2022-04-10
+Loyer de avril 2022,"-432.2",2022-04-07
+RDV dentiste,"-60.7",2022-04-10
+Bar,"-30.4",2022-04-10
 Facture électricité,-62,2022-04-10
-Course Carrefour ,"-71,2",2022-04-13
+Course Carrefour ,"-71.2",2022-04-13
 Remise de chèque 1136528 Mamie,120,2022-04-14
-Abonnement Sosh mobile,"-12,9",2022-04-18
-Essence voiture,"-64,5",2022-04-23
-Bar,"-10,2",2022-04-26
-Course Biocoop,"-57,45",2022-04-27
-Reboursement sécurité sociale,"48,56",2022-04-28
-Virement salaire mai 2022,"1326,5",2022-05-02
+Abonnement Sosh mobile,"-12.9",2022-04-18
+Essence voiture,"-64.5",2022-04-23
+Bar,"-10.2",2022-04-26
+Course Biocoop,"-57.45",2022-04-27
+Reboursement sécurité sociale,"48.56",2022-04-28
+Virement salaire mai 2022,"1326.5",2022-05-02
 Remise de chèque 1136529 Maman,80,2022-05-05
-Loyer de mai 2022,"-432,2",2022-05-08
-Essence voiture,"-66,1",2022-05-10
+Loyer de mai 2022,"-432.2",2022-05-08
+Essence voiture,"-66.1",2022-05-10
 RDV médecin,-25,2022-05-11
-Course Carrefour ,"-61,1",2022-05-11
+Course Carrefour ,"-61.1",2022-05-11
 Facture électricité,-62,2022-05-11
-Facture eau,"-152,3",2022-05-11
-Bar,"-17,88",2022-05-12
-Assurance habitation,"-230,6",2022-05-15
-Abonnement Sosh mobile,"-12,9",2022-05-19
-Salle de sport,"-69,9",2022-05-23
-Course Carrefour,"-64,75",2022-05-25
-Essence voiture,"-67,7",2022-05-27
-Restaurant Libanais,"-30,3",2022-05-28
-Bar,"-15,6",2022-05-28
-Abonnement Netflix,"-9,99",2022-05-28
+Facture eau,"-152.3",2022-05-11
+Bar,"-17.88",2022-05-12
+Assurance habitation,"-230.6",2022-05-15
+Abonnement Sosh mobile,"-12.9",2022-05-19
+Salle de sport,"-69.9",2022-05-23
+Course Carrefour,"-64.75",2022-05-25
+Essence voiture,"-67.7",2022-05-27
+Restaurant Libanais,"-30.3",2022-05-28
+Bar,"-15.6",2022-05-28
+Abonnement Netflix,"-9.99",2022-05-28
 Reboursement sécurité sociale,20,2022-05-29
-Virement salaire juin 2022,"1326,5",2022-06-02
+Virement salaire juin 2022,"1326.5",2022-06-02
