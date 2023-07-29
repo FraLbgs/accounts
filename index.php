@@ -3,6 +3,8 @@
 
     $_SESSION["token"] = md5(uniqid(mt_rand(), true));
 
+    // $date = date("Y-m")."%";
+
 
     include_once ("includes/_database.php");
 
@@ -11,15 +13,13 @@
     $query->execute(["date" => date("Y-m")."%"]);
     $res = $query->fetchAll();
 
-    // $query = $dbCo->prepare("SELECT SUM(amount) AS total FROM transaction WHERE date_transaction LIKE :date ;");
-    // $query->execute(["date" => date("Y-m")."%"]);
-    $query = $dbCo->prepare("SELECT SUM(amount) AS total FROM transaction;");
-    $query->execute();
-    $restAmount = $query->fetchColumn();
+    $query2 = $dbCo->prepare("SELECT SUM(amount) AS total FROM transaction;");
+    $query2->execute();
+    $restAmount = $query2->fetchColumn();
 
-    $query = $dbCo->prepare("SELECT id_category AS idC, category_name AS nameC FROM category;");
-    $query->execute();
-    $cat = $query->fetchAll();
+    $query3 = $dbCo->prepare("SELECT id_category AS idC, category_name AS nameC FROM category;");
+    $query3->execute();
+    $cat = $query3->fetchAll();
 
     include_once ("includes/_header.php");
 ?>
@@ -122,21 +122,29 @@
     <template id="modify-transaction">
         <tr data-form-id="">
             <td colspan="4">
-                <form action="" method="post">
-                    <select class="form-select" name="category" id="category">
-                        <option value="">Aucune catégorie</option>
-                        <?php
-                            for($i=0; $i<count($cat); $i++){
-                                echo "<option value='".$cat[$i]["idC"]."'>".$cat[$i]["nameC"]."</option>";
-                            }
-                        ?>
-                    </select>
-                    <input type="date" name="date" value="">
-                    <input type="text" name="name" value="">
-                    <input type="text" name="amount" value="">
-                    <input type="hidden" name="idTransaction" value="">
-                    <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
-                    <input type="submit" value="valider">
+                <form class="d-flex justify-content-between" method="post">
+                    <div class="d-flex">
+                        <div>
+                            <select class="form-select" name="category" id="category">
+                                <option value="">Aucune catégorie</option>
+                                <?php
+                                    for($i=0; $i<count($cat); $i++){
+                                        echo "<option value='".$cat[$i]["idC"]."'>".$cat[$i]["nameC"]."</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <input type="date" name="date" value="">
+                            <input type="text" name="name" value="">
+                        </div>
+                    </div>
+                    <div>
+                        <input type="text" name="amount" value="">
+                        <input type="hidden" name="idTransaction" value="">
+                        <input type="hidden" id="token-csrf" name="token" value="<?= $_SESSION["token"] ?>">
+                        <input type="submit" value="valider">
+                    </div>
                 </form>
             </td>
         </tr>

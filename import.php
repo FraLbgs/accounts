@@ -25,8 +25,6 @@
         }
     }
 
-
-
     include_once ("includes/_header.php");
 ?>
 

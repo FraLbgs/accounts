@@ -32,6 +32,7 @@ if(document.getElementById("modify-transaction") !== null){
             const amount = parseFloat(tr.querySelector("span").innerText);
             const form = createForm(idT, idC, name, date, amount);
             document.querySelector("tbody").insertBefore(form,tr);
+            tr.classList.add("d-none");
             form.addEventListener('submit', e => {
                 e.preventDefault();
                 modifyTransaction(e.target.closest("tr").dataset.formId,
@@ -50,6 +51,7 @@ if(document.getElementById("modify-transaction") !== null){
                     else console.error('Erreur lors de la modification.');
                     
                     form.remove();
+                    tr.classList.remove("d-none");
                 });
             });
         });
@@ -90,7 +92,7 @@ function updateTransaction(idT, idC, name, date, amount, classC) {
     tr.querySelector("[data-cat]").dataset.cat = idC;
     tr.querySelector("[data-name]").dataset.name = name;
     tr.querySelector("[data-name]").innerHTML = `<time datetime='${date}' class='d-block fst-italic fw-light'>`+ new Date(date).toLocaleDateString()+`</time>${name}`;
-    tr.querySelector("span").innerText = parseFloat(amount).toFixed(2);
+    tr.querySelector("span").innerText = parseFloat(amount).toFixed(2)+" €";
     const value = (parseFloat(amount) > 0 ? "success" : "warning" )
     tr.querySelector("span").className = "rounded-pill text-nowrap bg-"+value+"-subtle px-2";
     if(idC !== null) tr.querySelector(".ps-3").innerHTML = "<i class='bi bi-"+classC+" fs-3'></i>";
@@ -235,6 +237,7 @@ if(document.getElementById("modify-category") !== null){
             const icon = e.target.dataset.icon;
             const form = createFormCat(idC, name, icon);
             document.querySelector(".list-group-flush").insertBefore(form,li);
+            li.classList.add("d-none");
             form.addEventListener('submit', e => {
                 e.preventDefault();
                 modifyCategory(e.target.closest("li").dataset.formId,
@@ -242,7 +245,6 @@ if(document.getElementById("modify-category") !== null){
                     form.querySelector('input[name="icon"]').value
                     )
                 .then(res => {
-                    // console.log(res);
                     if (res.result){
                         updateCategory(res.idC, res.name, res.icon, res.totalOpe);
                         document.getElementById("msg").innerText = res.msg;
@@ -251,6 +253,7 @@ if(document.getElementById("modify-category") !== null){
                     else console.error('Erreur lors de la modification.');
                     
                     form.remove();
+                    li.classList.remove("d-none");
                 });
             });
         });
